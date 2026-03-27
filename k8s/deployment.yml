@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: UI
+  name: ui
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: UI
+      app: ui
   template:
     metadata:
       labels:
-        app: UI
+        app: ui
     spec:
       containers:
-        - name: UI
-          image: UI:v1
+        - name: ui
+          image: ui:v1
           imagePullPolicy: Never
           ports:
             - containerPort: 9091
