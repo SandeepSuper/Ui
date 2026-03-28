@@ -11,32 +11,34 @@ pipeline {
 
         stage('Build JAR') {
             steps {
-                sh 'cd UI && mvn clean package -DskipTests'
+                bat 'cd UI && mvn clean package -DskipTests'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'cd UI && docker build -t UI:v1 .'
-            }
-        }
-
-        stage('Load Image to Minikube') {
-            steps {
-                sh 'minikube image load UI:v1'
+                bat '''
+        cd UI
+        CALL minikube docker-env --shell cmd > env.cmd
+        CALL env.cmd
+        docker build -t ui:v1 .
+        '''
             }
         }
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl apply -f k8s/'
+                bat '''
+                set KUBECONFIG=C:\\Users\\pc\\.kube\\config
+                kubectl apply -f k8s/
+                '''
             }
         }
 
         stage('Verify') {
             steps {
-                sh 'kubectl get pods'
-                sh 'kubectl get svc'
+                bat 'set KUBECONFIG=C:\\Users\\pc\\.kube\\config && kubectl get pods'
+                bat 'set KUBECONFIG=C:\\Users\\pc\\.kube\\config && kubectl get svc'
             }
         }
     }
